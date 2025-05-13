@@ -1,0 +1,33 @@
+[
+  {
+    "productId": "11111111",
+    "clientId": "2222222",
+    "accountNumber": "0044112777",
+    "accountType": "CuentaAhorro",
+    "currency": "PEN",
+    "createdAt": null,
+    "updatedAt": null,
+    "status": "ACTIVO",
+    "balance": 0,
+    "quantityCurrentTransactionCount": 0,
+    "transactionDayEnable": null,
+    "headlines": [
+      {
+        "documentType" : "DNI",
+        "documentNumber" : "44785200",
+        "name" : "Jorge",
+        "lastName" : "Arias",
+        "cell" : "999888777"
+      }
+    ],
+    "signatories": [
+      {
+        "documentType" : "DNI",
+        "documentNumber" : "66665200",
+        "name" : "Maria",
+        "lastName" : "Arias",
+        "cell" : "993338777"
+      }
+    ]
+  }
+]
