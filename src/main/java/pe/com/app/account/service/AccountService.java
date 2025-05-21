@@ -5,13 +5,13 @@ import pe.com.app.account.controller.request.AccountNewRequest;
 import pe.com.app.account.controller.request.AccountUpdateRequest;
 import pe.com.app.account.controller.request.DepositRequest;
 import pe.com.app.account.controller.request.WithdrawalRequest;
+import pe.com.app.account.controller.response.AccountNewResponse;
 import pe.com.app.account.controller.response.AccountResponse;
-import pe.com.app.account.model.dto.AccountDto;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 /**
- * <b>Interface</b>: ProductService <br/>
+ * <b>Interface</b>: AccountService <br/>
  * <b>Copyright</b>: 2025 Tu Banco - Celula <br/>
  * .
  *
@@ -27,9 +27,11 @@ import reactor.core.publisher.Mono;
 public interface AccountService {
 
 
-    Mono<Void> newAccount(AccountNewRequest obj);
+    Mono<AccountNewResponse> newAccount(AccountNewRequest obj);
 
     Flux<AccountResponse> getAllAccountsByDocument(DocumentType documentType, String documentNumber);
+
+    Mono<AccountResponse> getAccountsByNumberAccount(String accountNumber);
 
     Mono<Void> updateAccount(String accountNumber, AccountUpdateRequest obj);
 
@@ -38,4 +40,5 @@ public interface AccountService {
     Mono<Void> depositAccount(String accountNumber, DepositRequest deposit);
 
     Mono<Void> withdrawalAccount(String accountNumber, WithdrawalRequest withdrawal);
+
 }

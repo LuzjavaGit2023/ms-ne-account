@@ -23,6 +23,7 @@ import pe.com.app.account.controller.request.AccountNewRequest;
 import pe.com.app.account.controller.request.AccountUpdateRequest;
 import pe.com.app.account.controller.request.DepositRequest;
 import pe.com.app.account.controller.request.WithdrawalRequest;
+import pe.com.app.account.controller.response.AccountNewResponse;
 import pe.com.app.account.controller.response.AccountResponse;
 import pe.com.app.account.service.AccountService;
 import reactor.core.publisher.Flux;
@@ -67,7 +68,7 @@ public class AccountController {
                     )
             )
     })
-    public Mono<Void> newAccount(@RequestBody AccountNewRequest request) {
+    public Mono<AccountNewResponse> newAccount(@RequestBody AccountNewRequest request) {
         return service.newAccount(request);
     }
 
@@ -89,6 +90,26 @@ public class AccountController {
     })
     public Flux<AccountResponse> getAllAccountsByDocument(@PathVariable DocumentType documentType, @PathVariable String documentNumber) {
         return service.getAllAccountsByDocument(documentType, documentNumber);
+    }
+
+    /**
+     * This method is used to get an account element of client by number Account.
+     *
+     * @return AccountResponse Flux.
+     */
+    @GetMapping("/{accountNumber}")
+    @Operation(summary = "This method is used to get an account element of client by number Account.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successful operation"),
+            @ApiResponse(responseCode = "500", description = "Internal server error",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = ErrorResponse.class)
+                    )
+            )
+    })
+    public Mono<AccountResponse> getAccountsByNumberAccount(@PathVariable String accountNumber) {
+        return service.getAccountsByNumberAccount(accountNumber);
     }
 
     /**

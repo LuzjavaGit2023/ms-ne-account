@@ -15,4 +15,5 @@ public class ClientServiceConfig {
 
     private String url;
     private String searchById;
+    private String searchByDocument;
 }

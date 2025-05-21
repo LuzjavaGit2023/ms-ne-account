@@ -25,4 +25,7 @@ import reactor.core.publisher.Mono;
 public interface AccountRepository extends ReactiveMongoRepository<AccountEntity, String> {
 
     Mono<Long> countByClientIdAndAccountType(String id, AccountType clientType);
+    Flux<AccountEntity> findByClientId(String clientId);
+
+    Mono<AccountEntity> findByAccountNumber(String accountNumber);
 }

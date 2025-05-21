@@ -1,14 +1,15 @@
 package pe.com.app.account.controller.response;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import lombok.experimental.SuperBuilder;
+import pe.com.app.account.model.dto.AccountDto;
 
-@AllArgsConstructor
-@NoArgsConstructor
-@Data
-@Builder
-public class AccountResponse {
-    private String id;
+import java.io.Serializable;
+
+@Getter
+@Setter
+@SuperBuilder
+public class AccountResponse extends AccountDto implements Serializable {
+
+    private static final long serialVersionUID = -4835095220588061994L;
 }

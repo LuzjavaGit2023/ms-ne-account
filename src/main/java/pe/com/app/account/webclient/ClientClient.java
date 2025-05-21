@@ -7,5 +7,8 @@ import reactor.core.publisher.Mono;
 
 public interface ClientClient {
     Mono<ClientDto> getClient(String id);
+    Mono<ClientDto> getClientByDocument(DocumentType documentType, String documentNumber);
+
+
     Mono<Void> addNewClient(ClientRequest obj);
 }
