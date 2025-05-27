@@ -1,10 +1,10 @@
 package pe.com.app.account.controller.response;
 
-import lombok.*;
+import java.io.Serializable;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 import pe.com.app.account.model.dto.AccountDto;
-
-import java.io.Serializable;
 
 @Getter
 @Setter

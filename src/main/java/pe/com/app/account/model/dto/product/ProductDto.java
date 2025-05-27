@@ -1,12 +1,11 @@
 package pe.com.app.account.model.dto.product;
 
+import java.io.Serializable;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
-
-import java.io.Serializable;
 
 @AllArgsConstructor
 @NoArgsConstructor

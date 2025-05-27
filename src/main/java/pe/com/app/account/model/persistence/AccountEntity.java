@@ -1,5 +1,8 @@
 package pe.com.app.account.model.persistence;
 
+import java.io.Serializable;
+import java.time.LocalDateTime;
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -10,10 +13,6 @@ import pe.com.app.account.common.config.AccountStatus;
 import pe.com.app.account.common.config.AccountType;
 import pe.com.app.account.common.config.Currency;
 import pe.com.app.account.model.dto.IndividualReferencedDto;
-
-import java.io.Serializable;
-import java.time.LocalDateTime;
-import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -35,7 +34,7 @@ public class AccountEntity implements Serializable {
 
     // Relacionado a control financiero
     private Double balance; //valor actual en cuenta
-    private Integer quantityCurrentTransactionCount;// Contador actual de transacciones
+    private Integer quantityCurrentTransactionCount; // Contador actual de transacciones
     private Integer transactionDayEnable; //dia especifico del mes para movimiento en cuenta plazo fijo
 
     private List<IndividualReferencedDto> headlines; //titulares

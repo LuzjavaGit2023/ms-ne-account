@@ -1,5 +1,6 @@
 package pe.com.app.account.common.mapper;
 
+import java.time.LocalDateTime;
 import org.springframework.util.CollectionUtils;
 import pe.com.app.account.common.config.AccountStatus;
 import pe.com.app.account.common.config.AccountType;
@@ -9,11 +10,9 @@ import pe.com.app.account.controller.response.AccountResponse;
 import pe.com.app.account.model.dto.product.ProductDto;
 import pe.com.app.account.model.persistence.AccountEntity;
 
-import java.time.LocalDateTime;
-
 public class AccountMapper {
 
-    public static AccountEntity buildEntityNew(AccountNewRequest a, ProductDto productDto){
+    public static AccountEntity buildEntityNew(AccountNewRequest a, ProductDto productDto) {
         return AccountEntity.builder()
                 .productId(a.getProductId())
                 .clientId(a.getClientId())
@@ -23,14 +22,15 @@ public class AccountMapper {
                 .status(AccountStatus.ACTIVO)
                 .balance(Double.valueOf(0.0))
                 .quantityCurrentTransactionCount(Integer.valueOf(0))
-                .transactionDayEnable(AccountType.FIXED_DEPOSIT.equals(AccountType.fromString(productDto.getProductSubType()))
+                .transactionDayEnable(
+                        AccountType.FIXED_DEPOSIT.equals(AccountType.fromString(productDto.getProductSubType()))
                         ? a.getTransactionDayEnable() : null)
                 .headlines(a.getHeadlines())
                 .signatories(a.getSignatories())
                 .build();
     }
 
-    public static AccountResponse buildAccountResponse(AccountEntity e){
+    public static AccountResponse buildAccountResponse(AccountEntity e) {
         return AccountResponse.builder()
                 .id(e.getId())
                 .productId(e.getProductId())

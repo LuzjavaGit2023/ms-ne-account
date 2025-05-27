@@ -6,13 +6,13 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-@OpenAPIDefinition(
-		info = @Info(title = "API Account", version = "1.0", description = "Reactive API for account management")
+@OpenAPIDefinition(info = @Info(title = "API Account", version = "1.0",
+        description = "Reactive API for account management")
 )
 public class MicroServApplication {
 
-	public static void main(String[] args) {
-		SpringApplication.run(MicroServApplication.class, args);
-	}
+    public static void main(String[] args) {
+        SpringApplication.run(MicroServApplication.class, args);
+    }
 
 }

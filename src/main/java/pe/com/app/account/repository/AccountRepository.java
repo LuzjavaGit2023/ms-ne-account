@@ -2,8 +2,6 @@ package pe.com.app.account.repository;
 
 import org.springframework.data.mongodb.repository.ReactiveMongoRepository;
 import pe.com.app.account.common.config.AccountType;
-import pe.com.app.account.common.config.ClientType;
-import pe.com.app.account.common.config.DocumentType;
 import pe.com.app.account.model.persistence.AccountEntity;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;

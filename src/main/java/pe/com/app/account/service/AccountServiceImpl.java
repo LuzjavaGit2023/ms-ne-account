@@ -1,5 +1,8 @@
 package pe.com.app.account.service;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -25,11 +28,6 @@ import pe.com.app.account.webclient.ClientClient;
 import pe.com.app.account.webclient.ProductClient;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
-
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
-import java.util.Arrays;
 
 /**
  * <b>Class</b>: AccountServiceImpl <br/>
@@ -57,7 +55,7 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public Mono<AccountNewResponse> newAccount(AccountNewRequest obj) {
-        var ob = AccountResponse.builder().build();
+        final var ob = AccountResponse.builder().build();
         log.info("newAccount : execute, request {}", obj);
         return productClient.getProduct(obj.getProductId())
                 .flatMap(productDto -> validateCorrectProduct(productDto))
@@ -72,7 +70,8 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public Flux<AccountResponse> getAllAccountsByDocument(DocumentType documentType, String documentNumber) {
-        log.info("getAllAccountsByDocument : execute, documentType {}, documentNumber {} ", documentType, documentNumber);
+        log.info("getAllAccountsByDocument : execute, documentType {}, documentNumber {} "
+                , documentType, documentNumber);
         return clientClient.getClientByDocument(documentType, documentNumber)
                 .flatMapMany(clientDto -> repository.findByClientId(clientDto.getId())
                         .map(accountEntity -> AccountMapper.buildAccountResponse(accountEntity)));
@@ -86,7 +85,7 @@ public class AccountServiceImpl implements AccountService {
                 .switchIfEmpty(Mono.error(new IllegalStateException(Constant.ELEMENT_NOT_FOUND)))
                 .flatMap(accountEntity -> {
                     if (AccountStatus.CERRADO.equals(accountEntity.getStatus())) {
-                        return Mono.error(new IllegalStateException(Constant.ELEMENT_NOT_ACTIVE));
+                        return Mono.error(buildException(Constant.ELEMENT_NOT_ACTIVE));
                     }
                     return Mono.just(accountEntity);
                 })
@@ -100,10 +99,10 @@ public class AccountServiceImpl implements AccountService {
                 .switchIfEmpty(Mono.error(new IllegalStateException(Constant.ELEMENT_NOT_FOUND)))
                 .flatMap(accountEntity -> {
                     if (AccountStatus.CERRADO.equals(accountEntity.getStatus())) {
-                        return Mono.error(new IllegalStateException(Constant.ELEMENT_NOT_ACTIVE));
+                        return Mono.error(buildException(Constant.ELEMENT_NOT_ACTIVE));
                     }
                     if (CollectionUtils.isEmpty(obj.getHeadlines())) {
-                        return Mono.error(new IllegalStateException(Constant.ELEMENT_ANY_HOLDER_PRESENT));
+                        return Mono.error(buildException(Constant.ELEMENT_ANY_HOLDER_PRESENT));
                     }
                     return Mono.just(accountEntity);
                 })
@@ -115,10 +114,10 @@ public class AccountServiceImpl implements AccountService {
     public Mono<Void> deleteAccount(String accountNumber) {
         log.info("deleteAccount : execute, accountNumber {}", accountNumber);
         return repository.findByAccountNumber(accountNumber)
-                .switchIfEmpty(Mono.error(new IllegalStateException(Constant.ELEMENT_NOT_FOUND)))
+                .switchIfEmpty(Mono.error(buildException(Constant.ELEMENT_NOT_FOUND)))
                 .flatMap(accountEntity -> {
                     if (AccountStatus.CERRADO.equals(accountEntity.getStatus())) {
-                        return Mono.error(new IllegalStateException(Constant.ELEMENT_NOT_ACTIVE));
+                        return Mono.error(buildException(Constant.ELEMENT_NOT_ACTIVE));
                     }
                     return repository.save(AccountMapper.buildEntityDelete(accountEntity));
                 })
@@ -140,10 +139,11 @@ public class AccountServiceImpl implements AccountService {
     private Mono<Boolean> validateFixedDepositAccount(ProductDto product, ClientDto client, AccountNewRequest obj) {
         //configuracion de comision y limite de movimientos mensuales esta configurado en el producto
         //pero si es cuenta deposito fijo, se debe validar el dia habilitado para retiro o deposito del mes
-        var accountTypeSelected = AccountType.valueOf(product.getProductSubType());
+        final var accountTypeSelected = AccountType.valueOf(product.getProductSubType());
         if (AccountType.FIXED_DEPOSIT.equals(accountTypeSelected)
-                && (obj.getTransactionDayEnable() == null || obj.getTransactionDayEnable() <= 0 || obj.getTransactionDayEnable() >31 )) {
-            return Mono.error(new IllegalStateException("En Cuenta a plaza fijo, debe indicar dia del mes para retiro o deposito, no procede."));
+                && (obj.getTransactionDayEnable() == null || obj.getTransactionDayEnable() <= 0
+                || obj.getTransactionDayEnable() > 31 )) {
+            return Mono.error(buildException(Constant.ANY_DAY_PRESENT_ACCOUNT));
         }
         return Mono.just(true);
     }
@@ -152,7 +152,7 @@ public class AccountServiceImpl implements AccountService {
         log.info("validateAccountsQuantity : start product : {}", product);
         log.info("validateAccountsQuantity : start client : {}", client);
         log.info("validateAccountsQuantity : ClientType : {}", client.getClientType());
-        if(client.getClientType() == ClientType.NATURAL) {
+        if (client.getClientType() == ClientType.NATURAL) {
             //1 maximo de cta de ahorro
             //1 maximo de cta corriente
             // varias cuentas a plazo fijo
@@ -160,15 +160,15 @@ public class AccountServiceImpl implements AccountService {
                     .flatMap(countSA -> {
 
                         log.info("validateAccountsQuantity : countByClientIdAndAccountType : {}", countSA);
-                        if(countSA + isOneMoreSavingAccount(product) > 1) {
-                            return Mono.error(new IllegalStateException("El cliente(persona natural) ya tiene 1 cuenta de ahorro, no procede."));
+                        if (countSA + isOneMoreSavingAccount(product) > 1) {
+                            return Mono.error(buildException(Constant.PN_HAS_ONE_SAVINGS_ACCOUNT));
                         }
                         return repository.countByClientIdAndAccountType(client.getId(), AccountType.CURRENT_ACCOUNT)
                                 .flatMap(countCC -> {
 
                                     log.info("validateAccountsQuantity : countByClientIdAndAccountType : {}", countCC);
-                                    if(countCC + isOneMoreCurrentAccount(product) > 1) {
-                                        return Mono.error(new IllegalStateException("El cliente(persona natural) ya tiene 1 cuenta corriente, no procede."));
+                                    if (countCC + isOneMoreCurrentAccount(product) > 1) {
+                                        return Mono.error(buildException(Constant.PN_HAS_ONE_CURRENT_ACCOUNT));
                                     }
 
                                     log.info("validateAccountsQuantity : paso todas las validaciones P.NATURAL");
@@ -181,13 +181,15 @@ public class AccountServiceImpl implements AccountService {
             //puede tener multiples cta corriente
             //no puede tener de cta a plazo fijo
             return Mono.defer(() -> {
-                if((isOneMoreSavingAccount(product) + isOneMoreFixedDeposit(product)) > 0){ // trata de crear cta corriente o plazo fijo
-                    return Mono.error(new IllegalStateException("El cliente(persona empresa) no puede tener cuenta de ahorro o de cuenta plazo fijo, no procede."));
+                if ((isOneMoreSavingAccount(product) + isOneMoreFixedDeposit(product)) > 0) {
+                    // trata de crear cta corriente o plazo fijo
+                    return Mono.error(buildException(Constant.PJ_NOT_VALID_ACCOUNT));
                 }
 
                 //validar Titulares y Firmantes
-                if(obj.getHeadlines() == null || obj.getHeadlines().isEmpty()) { //puede tener 1 o mas titulares.
-                    return Mono.error(new IllegalStateException("El cliente(persona empresa) debe ingresar un titular como minimo, no procede."));
+                if (obj.getHeadlines() == null || obj.getHeadlines().isEmpty()) { //puede tener 1 o mas titulares.
+                    return Mono.error(buildException(
+                            "El cliente(persona empresa) debe ingresar un titular como minimo, no procede."));
                 }
                 //Puede tner cero o mas firmantes autorizados, no es nesario validar cantidad
                 //no es necesario validar cuentas plazo fijo
@@ -200,7 +202,13 @@ public class AccountServiceImpl implements AccountService {
         }
     }
 
-    private Mono<AccountNewResponse> saveNewAccountValidated(AccountNewRequest obj, ClientDto client, ProductDto product) {
+    public static IllegalStateException buildException(String txt) {
+        return new IllegalStateException(txt);
+    }
+
+    private Mono<AccountNewResponse> saveNewAccountValidated(AccountNewRequest obj,
+                                                             ClientDto client,
+                                                             ProductDto product) {
         log.info("saveNewAccountValidated, nueva cuenta {}", obj);
         return Mono.just(AccountMapper.buildEntityNew(obj, product))
                 .flatMap(accountEntity -> assignNumberAccount(accountEntity, client, product))
@@ -218,7 +226,7 @@ public class AccountServiceImpl implements AccountService {
     }
 
     private Mono<AccountEntity> assignNumberAccount(AccountEntity account, ClientDto client, ProductDto product) {
-        StringBuilder numberAccount = new StringBuilder("");
+        final StringBuilder numberAccount = new StringBuilder("");
         switch (account.getAccountType()) {
             case SAVINGS_ACCOUNT : numberAccount.append("191-"); break;
             case CURRENT_ACCOUNT : numberAccount.append("192-"); break;
@@ -236,21 +244,24 @@ public class AccountServiceImpl implements AccountService {
             case "Activo": numberAccount.append("2-"); break;
             default: numberAccount.append("0-");
         }
-        LocalDateTime horaActual = LocalDateTime .now();
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
-        String random = horaActual.format(formatter);
+        final LocalDateTime horaActual = LocalDateTime .now();
+        final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
+        final String random = horaActual.format(formatter);
         numberAccount.append(random);
         account.setAccountNumber(numberAccount.toString());
         return Mono.just(account);
     }
 
     private Mono<ProductDto> validateCorrectProduct(ProductDto productDto) {
-        boolean valid = Arrays.stream(AccountType.values())
+        final boolean valid = Arrays.stream(AccountType.values())
                 .anyMatch(r -> r.name().equalsIgnoreCase(productDto.getProductSubType()));
         log.info("Is product valid to account : {} on {}", valid, productDto.getProductSubType());
-        if (valid) return Mono.just(productDto);
-        return Mono.error(new IllegalStateException("Producto seleccionado no es valido para una cuenta, no procede."));
+        if (valid) {
+            return Mono.just(productDto);
+        }
+        return Mono.error(buildException("Producto seleccionado no es valido para una cuenta, no procede."));
     }
+
 
     private int isOneMoreSavingAccount(ProductDto product) { //cta de ahorro
         return AccountType.SAVINGS_ACCOUNT.getDescription().equals(product.getProductSubType()) ? 1 : 0 ;
