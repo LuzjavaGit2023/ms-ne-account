@@ -5,7 +5,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.data.annotation.Id;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -13,7 +12,6 @@ import org.springframework.data.annotation.Id;
 @Builder
 public class ProductDto implements Serializable {
     private static final long serialVersionUID = 7346145359381795413L;
-    @Id
     private String id;
     private String productType;
     private String productSubType;

@@ -22,6 +22,7 @@ import pe.com.app.account.common.config.DocumentType;
 import pe.com.app.account.controller.request.AccountNewRequest;
 import pe.com.app.account.controller.request.AccountUpdateRequest;
 import pe.com.app.account.controller.request.DepositRequest;
+import pe.com.app.account.controller.request.TransferRequest;
 import pe.com.app.account.controller.request.WithdrawalRequest;
 import pe.com.app.account.controller.response.AccountNewResponse;
 import pe.com.app.account.controller.response.AccountResponse;
@@ -114,6 +115,26 @@ public class AccountController {
     }
 
     /**
+     * This method is used to get an account element of client by id.
+     *
+     * @return AccountResponse Flux.
+     */
+    @GetMapping("/{accountId}/id")
+    @Operation(summary = "This method is used to get an account element of client by id.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successful operation"),
+            @ApiResponse(responseCode = "500", description = "Internal server error",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = ErrorResponse.class)
+                    )
+            )
+    })
+    public Mono<AccountResponse> getAccountById(@PathVariable String accountId) {
+        return service.getAccountById(accountId);
+    }
+
+    /**
      * This method is used to update an account element.
      *
      * @return Void Mono.
@@ -196,5 +217,26 @@ public class AccountController {
     })
     public Mono<Void> withdrawalAccount(@PathVariable String accountNumber, @RequestBody WithdrawalRequest withdrawal) {
         return service.withdrawalAccount(accountNumber, withdrawal);
+    }
+
+    /**
+     * This method is used to save a Transfer to an account element.
+     *
+     * @return Void Mono.
+     */
+    @PostMapping("/{accountNumber}/transfer")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @Operation(summary = "This method is used to save a Transfer to an account element.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "204", description = "Successful operation"),
+            @ApiResponse(responseCode = "500", description = "Internal server error",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = ErrorResponse.class)
+                    )
+            )
+    })
+    public Mono<Void> transferAccount(@PathVariable String accountNumber, @RequestBody TransferRequest transfer) {
+        return service.transferAccount(accountNumber, transfer);
     }
 }

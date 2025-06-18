@@ -4,6 +4,7 @@ import pe.com.app.account.common.config.DocumentType;
 import pe.com.app.account.controller.request.AccountNewRequest;
 import pe.com.app.account.controller.request.AccountUpdateRequest;
 import pe.com.app.account.controller.request.DepositRequest;
+import pe.com.app.account.controller.request.TransferRequest;
 import pe.com.app.account.controller.request.WithdrawalRequest;
 import pe.com.app.account.controller.response.AccountNewResponse;
 import pe.com.app.account.controller.response.AccountResponse;
@@ -32,6 +33,7 @@ public interface AccountService {
     Flux<AccountResponse> getAllAccountsByDocument(DocumentType documentType, String documentNumber);
 
     Mono<AccountResponse> getAccountsByNumberAccount(String accountNumber);
+    Mono<AccountResponse> getAccountById(String accountId);
 
     Mono<Void> updateAccount(String accountNumber, AccountUpdateRequest obj);
 
@@ -40,5 +42,7 @@ public interface AccountService {
     Mono<Void> depositAccount(String accountNumber, DepositRequest deposit);
 
     Mono<Void> withdrawalAccount(String accountNumber, WithdrawalRequest withdrawal);
+
+    Mono<Void> transferAccount(String accountNumber, TransferRequest transfer);
 
 }

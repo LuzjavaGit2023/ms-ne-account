@@ -2,6 +2,7 @@ package pe.com.app.account.repository;
 
 import org.springframework.data.mongodb.repository.ReactiveMongoRepository;
 import pe.com.app.account.common.config.AccountType;
+import pe.com.app.account.common.config.ProfileType;
 import pe.com.app.account.model.persistence.AccountEntity;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -26,4 +27,5 @@ public interface AccountRepository extends ReactiveMongoRepository<AccountEntity
     Flux<AccountEntity> findByClientId(String clientId);
 
     Mono<AccountEntity> findByAccountNumber(String accountNumber);
+    Mono<Long> countByClientIdAndProfile(String id, ProfileType profile);
 }

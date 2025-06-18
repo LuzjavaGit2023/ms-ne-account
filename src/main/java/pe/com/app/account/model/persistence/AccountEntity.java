@@ -12,6 +12,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import pe.com.app.account.common.config.AccountStatus;
 import pe.com.app.account.common.config.AccountType;
 import pe.com.app.account.common.config.Currency;
+import pe.com.app.account.common.config.ProfileType;
 import pe.com.app.account.model.dto.IndividualReferencedDto;
 
 @AllArgsConstructor
@@ -25,9 +26,11 @@ public class AccountEntity implements Serializable {
     private String id;
     private String productId;
     private String clientId;
+    private ProfileType profile;
     private String accountNumber;
     private AccountType accountType; // CuentaAhorro CuentaCorriente PlazoFijo
     private Currency currency; // Moneda (USD, PEN, EUR, etc.)
+    private LocalDateTime lastTransactionDate;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     private AccountStatus status; // ESTADO (ACTIVO, BLOQUEADO, CERRADO)
@@ -39,5 +42,6 @@ public class AccountEntity implements Serializable {
 
     private List<IndividualReferencedDto> headlines; //titulares
     private List<IndividualReferencedDto> signatories; //firmantes
+
 
 }

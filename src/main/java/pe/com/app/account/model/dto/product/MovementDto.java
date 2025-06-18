@@ -15,4 +15,5 @@ public class MovementDto implements Serializable {
     private Boolean unlimited;
     private Integer quantityMaxim;
     private Boolean specificDay;
+    private Double cost;
 }

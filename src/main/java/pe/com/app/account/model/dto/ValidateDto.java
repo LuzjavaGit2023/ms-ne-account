@@ -1,4 +1,4 @@
-package pe.com.app.account.model.dto.movement;
+package pe.com.app.account.model.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Data
 @Builder
-public class BankingMovement {
-    private String id;
+public class ValidateDto {
+    private Boolean valid;
+    private Boolean costMovement;
 }

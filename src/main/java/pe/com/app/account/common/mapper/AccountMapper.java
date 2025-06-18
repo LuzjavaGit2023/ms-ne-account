@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import org.springframework.util.CollectionUtils;
 import pe.com.app.account.common.config.AccountStatus;
 import pe.com.app.account.common.config.AccountType;
+import pe.com.app.account.common.config.ProfileType;
 import pe.com.app.account.controller.request.AccountNewRequest;
 import pe.com.app.account.controller.request.AccountUpdateRequest;
 import pe.com.app.account.controller.response.AccountResponse;
@@ -17,7 +18,9 @@ public class AccountMapper {
                 .productId(a.getProductId())
                 .clientId(a.getClientId())
                 .accountType(AccountType.fromString(productDto.getProductSubType()))
+                .profile(a.getProfile() == null ? ProfileType.GENERAL : a.getProfile())
                 .currency(a.getCurrency())
+                .lastTransactionDate(LocalDateTime.now())
                 .createdAt(LocalDateTime.now())
                 .status(AccountStatus.ACTIVO)
                 .balance(Double.valueOf(0.0))

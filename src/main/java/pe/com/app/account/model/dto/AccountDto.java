@@ -10,6 +10,7 @@ import lombok.experimental.SuperBuilder;
 import pe.com.app.account.common.config.AccountStatus;
 import pe.com.app.account.common.config.AccountType;
 import pe.com.app.account.common.config.Currency;
+import pe.com.app.account.common.config.ProfileType;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -20,6 +21,7 @@ public class AccountDto implements Serializable {
     private String id;
     private String productId;
     private String clientId;
+    private ProfileType profile;
     private String accountNumber;
     private AccountType accountType; // CuentaAhorro CuentaCorriente PlazoFijo
     private Currency currency; // Moneda (USD, PEN, EUR, etc.)
