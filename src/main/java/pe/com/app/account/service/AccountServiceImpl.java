@@ -11,6 +11,7 @@ import org.springframework.util.CollectionUtils;
 import pe.com.app.account.common.config.*;
 import pe.com.app.account.common.mapper.AccountMapper;
 import pe.com.app.account.common.util.Constant;
+import pe.com.app.account.common.util.Util;
 import pe.com.app.account.controller.request.AccountNewRequest;
 import pe.com.app.account.controller.request.AccountUpdateRequest;
 import pe.com.app.account.controller.request.DepositRequest;
@@ -81,6 +82,13 @@ public class AccountServiceImpl implements AccountService {
                 .flatMapMany(clientDto -> repository.findByClientId(clientDto.getId())
                         .map(AccountMapper::buildAccountResponse));
 
+    }
+
+    @Override
+    public Flux<AccountResponse> getAllAccountsToTrxP2P() {
+        log.info("getAllAccountsToTrxP2P :::::::::::::::::::: execute");
+        return repository.findByAccountType(AccountType.ELECTRONIC_MONEY)
+                .map(AccountMapper::buildAccountResponse);
     }
 
     @Override
@@ -533,7 +541,21 @@ public class AccountServiceImpl implements AccountService {
         log.info("validateAccountsQuantity : start product : {}", product);
         log.info("validateAccountsQuantity : start client : {}", client);
         log.info("validateAccountsQuantity : ClientType : {}", client.getClientType());
-        if (client.getClientType() == ClientType.NATURAL) {
+
+        var typeProductRequest = AccountType.fromString(product.getProductSubType());
+
+        if (AccountType.ELECTRONIC_MONEY.equals(typeProductRequest)) {
+
+            if (Util.isEmpty(client.getDocumentNumber())
+                    || Util.isEmpty(client.getCell())
+                    || Util.isEmpty(client.getCell())
+                    || client.getClientType() == null) {
+                return Mono.error(buildException("Cliente no valido, no cumple con lo minimo(documento, cell, email)"));
+            }
+            return Mono.just(true);
+
+        }
+        else if (client.getClientType() == ClientType.NATURAL) {
             //1 maximo de cta de ahorro
             //1 maximo de cta corriente
             // varias cuentas a plazo fijo

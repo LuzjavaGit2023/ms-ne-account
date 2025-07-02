@@ -32,11 +32,12 @@ public interface AccountService {
 
     Flux<AccountResponse> getAllAccountsByDocument(DocumentType documentType, String documentNumber);
 
+    Flux<AccountResponse> getAllAccountsToTrxP2P();
+
     Mono<AccountResponse> getAccountsByNumberAccount(String accountNumber);
     Mono<AccountResponse> getAccountById(String accountId);
 
     Mono<Void> updateAccount(String accountNumber, AccountUpdateRequest obj);
-
 
     Mono<Void> deleteAccount(String accountNumber);
     Mono<Void> depositAccount(String accountNumber, DepositRequest deposit);

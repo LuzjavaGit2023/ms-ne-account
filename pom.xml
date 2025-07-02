@@ -25,6 +25,19 @@
 			<artifactId>spring-boot-starter-webflux</artifactId>
 		</dependency>
 
+		<!-- Kafka Reactive Support -->
+		<dependency>
+			<groupId>org.springframework.kafka</groupId>
+			<artifactId>spring-kafka</artifactId>
+		</dependency>
+
+		<!-- JSON Support -->
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-databind</artifactId>
+		</dependency>
+
+
 		<!-- Reactive MongoDB -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -127,6 +140,78 @@
 					<outputFile>${project.build.directory}/checkstyle-result.xml</outputFile>
 					<outputFileFormat>xml</outputFileFormat>
 				</configuration>
+			</plugin>
+
+
+
+			<plugin>
+				<groupId>org.jacoco</groupId>
+				<artifactId>jacoco-maven-plugin</artifactId>
+				<version>0.8.10</version>
+				<executions>
+					<!-- Prepara el agente de JaCoCo antes de que se ejecuten los tests -->
+					<execution>
+						<id>prepare-agent</id>
+						<goals>
+							<goal>prepare-agent</goal>
+						</goals>
+					</execution>
+
+					<!-- Genera el reporte luego de correr los tests -->
+					<execution>
+						<id>report</id>
+						<phase>verify</phase>
+						<goals>
+							<goal>report</goal>
+						</goals>
+						<configuration>
+							<excludes>
+								<!-- Excluir paquetes y clases -->
+								<exclude>pe/com/app/account/advice/**</exclude>
+								<exclude>pe/com/app/account/common/**</exclude>
+								<exclude>pe/com/app/account/model/**</exclude>
+								<exclude>pe/com/app/account/repository/**</exclude>
+								<exclude>pe/com/app/account/webclient/**</exclude>
+								<exclude>pe/com/app/account/controller/request/**</exclude>
+								<exclude>pe/com/app/account/controller/response/**</exclude>
+								<exclude>**/MicroServApplication*</exclude> <!-- Por ejemplo, clase principal -->
+							</excludes>
+						</configuration>
+					</execution>
+
+					<!-- Verifica que se cumplan umbrales mínimos de cobertura -->
+					<execution>
+						<id>check</id>
+						<goals>
+							<goal>check</goal>
+						</goals>
+						<configuration>
+							<rules>
+								<rule>
+									<element>BUNDLE</element>
+									<limits>
+										<limit>
+											<counter>INSTRUCTION</counter>
+											<value>COVEREDRATIO</value>
+											<minimum>0.85</minimum> <!-- 50% mínimo de cobertura -->
+										</limit>
+									</limits>
+								</rule>
+							</rules>
+							<excludes>
+								<!-- Excluir paquetes y clases -->
+								<exclude>pe/com/app/account/advice/**</exclude>
+								<exclude>pe/com/app/account/common/**</exclude>
+								<exclude>pe/com/app/account/model/**</exclude>
+								<exclude>pe/com/app/account/repository/**</exclude>
+								<exclude>pe/com/app/account/webclient/**</exclude>
+								<exclude>pe/com/app/account/controller/request/**</exclude>
+								<exclude>pe/com/app/account/controller/response/**</exclude>
+								<exclude>**/MicroServApplication*</exclude>
+							</excludes>
+						</configuration>
+					</execution>
+				</executions>
 			</plugin>
 
 

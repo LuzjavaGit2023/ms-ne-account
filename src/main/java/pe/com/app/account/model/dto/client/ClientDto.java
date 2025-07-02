@@ -20,4 +20,6 @@ public class ClientDto implements Serializable {
     private String name;
     private String lastName;
     private ClientType clientType;
+    private String cell;
+    private String email;
 }

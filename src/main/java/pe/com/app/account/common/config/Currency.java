@@ -6,7 +6,8 @@ import com.fasterxml.jackson.annotation.JsonValue;
 public enum Currency {
     USD("USD"),
     PEN("PEN"),
-    EUR("EUR");
+    EUR("EUR"),
+    BOOTCOIN("BOOTCOIN");
 
     private final String description;
 

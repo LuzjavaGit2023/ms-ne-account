@@ -25,6 +25,7 @@ public interface AccountRepository extends ReactiveMongoRepository<AccountEntity
 
     Mono<Long> countByClientIdAndAccountType(String id, AccountType clientType);
     Flux<AccountEntity> findByClientId(String clientId);
+    Flux<AccountEntity> findByAccountType(AccountType clientType);
 
     Mono<AccountEntity> findByAccountNumber(String accountNumber);
     Mono<Long> countByClientIdAndProfile(String id, ProfileType profile);

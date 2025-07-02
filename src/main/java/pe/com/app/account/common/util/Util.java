@@ -25,4 +25,8 @@ public class Util {
     public static String sanitized(String value) {
         return value != null ? value.replace("\n", "").replace("\r", "") : null;
     }
+
+    public static boolean isEmpty(String s) {
+        return s == null || s.trim().isEmpty();
+    }
 }
